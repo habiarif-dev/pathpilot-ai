@@ -19,15 +19,7 @@ function createAIClient() {
 }
 
 function getGeminiModel() {
-  const model = process.env.GEMINI_MODEL;
-
-  if (!model) {
-    throw new Error(
-      "GEMINI_MODEL is missing from the server environment."
-    );
-  }
-
-  return model;
+  return process.env.GEMINI_MODEL || "gemini-2.5-flash";
 }
 
 function cleanJSONResponse(responseText) {
