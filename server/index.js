@@ -17,6 +17,7 @@ import {
   regenerateRoadmapMilestone,
   generateDailyMissionFromRoadmap,
 } from "./career-roadmap.js";
+import dashboardInsights from "./dashboard-insights.js";
 
 const app = express();
 
@@ -80,6 +81,11 @@ app.post(
 app.post(
   "/api/career-roadmap/daily-mission",
   generateDailyMissionFromRoadmap
+);
+
+app.post(
+  "/api/dashboard-insights",
+  dashboardInsights
 );
 
 app.get("/", (req, res) => {

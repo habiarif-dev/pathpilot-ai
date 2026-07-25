@@ -2,6 +2,8 @@ import useAchievements from "../hooks/useAchievements";
 import AchievementCard from "../components/AchievementCard";
 import useStreak from "../hooks/useStreak";
 import StreakCard from "../components/StreakCard";
+import { getDashboardInsights } from "../services/dashboardInsightsService";
+import AIInsightsCard from "../components/dashboard/AIInsightsCard";
 import {
   ArrowRight,
   BookOpen,
@@ -193,6 +195,8 @@ function Dashboard() {
   const navigate = useNavigate();
 
   const [userData, setUserData] = useState(null);
+  const [aiInsights, setAiInsights] = useState([]);
+  const [loadingInsights, setLoadingInsights] = useState(true);
   const [roadmap, setRoadmap] = useState([]);
   const [completedTasks, setCompletedTasks] =
     useState([]);
@@ -660,6 +664,62 @@ function Dashboard() {
       </div>
     );
   }
+
+  useEffect(() => {
+  if (!userData) return;
+
+  async function loadInsights() {
+    try {
+      setLoadingInsights(true);
+
+      const insights = await getDashboardInsights({
+        name: user.name,
+        careerGoal: user.careerGoal,
+        experience: user.experience,
+        skills: user.skills,
+        interests: user.interests,
+
+        roadmapProgress: overallRoadmapProgress,
+        completedRoadmapStages,
+        totalRoadmapStages: roadmap.length,
+
+        completedMissions: completedCount,
+        totalMissions: dailyMissions.length,
+
+        currentStreak,
+
+        xp,
+
+        hasResumeAnalysis: Boolean(resumeAnalysis),
+        resumeScore,
+
+        startedProjects,
+        completedProjects,
+      });
+
+      setAiInsights(insights);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingInsights(false);
+    }
+  }
+
+  loadInsights();
+}, [
+  userData,
+  overallRoadmapProgress,
+  completedRoadmapStages,
+  roadmap.length,
+  completedCount,
+  dailyMissions.length,
+  currentStreak,
+  xp,
+  resumeAnalysis,
+  resumeScore,
+  startedProjects,
+  completedProjects,
+]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-white">
