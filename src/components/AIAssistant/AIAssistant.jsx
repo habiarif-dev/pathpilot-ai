@@ -689,23 +689,44 @@ function AIAssistant() {
           ),
 
           code: ({
-            inline,
-            children,
-          }) =>
-            inline ? (
-              <code className="rounded bg-slate-200 px-1.5 py-0.5 font-mono text-xs text-indigo-700 dark:bg-slate-700 dark:text-indigo-300">
+           inline,
+           className,
+           children,
+           ...props
+          }) => {
+            const match =
+            /language-(\w+)/.exec(
+              className || ""
+            );
+
+           const code = String(children).replace(
+            /\n$/,
+             ""
+           );
+
+           if (inline) {
+             return (
+               <code
+                className="rounded bg-slate-200 px-1.5 py-0.5 font-mono text-xs text-indigo-700 dark:bg-slate-700 dark:text-indigo-300"
+                {...props}
+               >
                 {children}
-              </code>
-            ) : (
-              <code className="my-3 block overflow-x-auto whitespace-pre rounded-xl bg-slate-950 p-4 font-mono text-xs leading-5 text-slate-100">
-                {children}
-              </code>
-            ),
+               </code>
+              );
+            }
+
+            return (
+             <CodeBlock
+               language={
+                 match ? match[1] : "text"
+               }
+               code={code}
+             />
+           );
+          },
 
           pre: ({ children }) => (
-            <pre className="my-3 overflow-x-auto rounded-xl bg-slate-950">
-              {children}
-            </pre>
+          <>{children}</>
           ),
 
           table: ({
