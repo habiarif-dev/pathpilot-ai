@@ -1,0 +1,39 @@
+{
+  "name": "pathpilot-ai",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "server": "nodemon server/index.js",
+    "client": "vite",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@google/genai": "^2.13.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "concurrently": "^10.0.3",
+    "cors": "^2.8.6",
+    "docx": "^9.7.1",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "file-saver": "^2.0.5",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
+    "lucide-react": "^1.25.0",
+    "mammoth": "^1.12.0",
+    "multer": "^2.2.0",
+    "pdf-parse": "^2.4.5",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^7.11.0",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
+    "nodemon": "^3.1.14",
+    "vite": "^7.3.6"
+  }
+}
