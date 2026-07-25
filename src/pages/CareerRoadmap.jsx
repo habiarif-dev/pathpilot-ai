@@ -51,6 +51,12 @@ import {
   updateRoadmapTaskStatus,
 } from "../services/careerRoadmapService";
 
+import {
+  downloadRoadmapDOCX,
+  downloadRoadmapJSON,
+  downloadRoadmapPDF,
+} from "../utils/roadmapExporter";
+
 const defaultForm = {
   careerGoal: "Become a Frontend Developer",
   targetRole: "Frontend Developer",
@@ -706,6 +712,33 @@ function RoadmapSidebar({
         >
           <RefreshCcw size={17} />
           Create New Roadmap
+        </button>
+
+        <button
+          type="button"
+          onClick={() => downloadRoadmapPDF(roadmap)}
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-indigo-200 px-4 py-3 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-50 dark:border-indigo-800 dark:text-indigo-300 dark:hover:bg-indigo-950/30"
+        >
+          <Save size={17} />
+          Download PDF
+        </button>
+
+        <button
+          type="button"
+          onClick={() => downloadRoadmapDOCX(roadmap)}
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold transition hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+        >
+          <Save size={17} />
+          Download DOCX
+        </button>
+
+        <button
+          type="button"
+          onClick={() => downloadRoadmapJSON(roadmap)}
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-200 px-4 py-3 text-sm font-semibold text-emerald-600 transition hover:bg-emerald-50 dark:border-emerald-800 dark:text-emerald-300 dark:hover:bg-emerald-950/30"
+        >
+          <Archive size={17} />
+          Backup JSON
         </button>
 
         <button
@@ -1499,28 +1532,6 @@ function DeleteRoadmapModal({ onClose, onDelete }) {
           >
             Delete Roadmap
           </button>
-          <div className="flex gap-3">
-             <button
-                  onClick={() => downloadRoadmapPDF(roadmap)}
-                  className="..."
-                >
-                    Download PDF
-              </button>
-
-              <button
-                 onClick={() => downloadRoadmapDOCX(roadmap)}
-                  className="..."
-               >
-                  Download DOCX
-              </button>
-
-              <button
-                 onClick={() => downloadRoadmapJSON(roadmap)}
-                 className="..."
-                >
-                   Backup
-             </button>
-          </div>
         </div>
       </div>
     </ModalOverlay>
@@ -1828,4 +1839,4 @@ function updateForm(setFormData, field, value) {
   }));
 }
 
-export default CareerRoadmap;
+export default CareerRoadmap; 
