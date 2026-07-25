@@ -7,6 +7,8 @@ import {
   Lightbulb,
   Loader2,
   MessageCircle,
+  Mic,
+  MicOff,
   RefreshCw,
   RotateCcw,
   Send,
@@ -32,6 +34,7 @@ const WELCOME_MESSAGE = {
   content:
     "Hi! I’m your PathPilot AI Career Copilot. I can help with your roadmap, resume, projects, skills, interviews, and daily learning plan.",
 };
+
 
 const SUGGESTED_PROMPTS = [
   {
@@ -114,6 +117,10 @@ function AIAssistant() {
     typingMessageId,
     setTypingMessageId,
   ] = useState(null);
+
+  const [isListening, setIsListening] = useState(false);
+
+  const recognitionRef = useRef(null);
 
   const messagesEndRef =
     useRef(null);
@@ -225,6 +232,65 @@ function AIAssistant() {
       }
     };
   }, []);
+
+  useEffect(() => {
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+
+  recognition.continuous = false;
+  recognition.interimResults = true;
+  recognition.lang = "en-US";
+
+  recognition.onstart = () => {
+    setIsListening(true);
+  };
+
+  recognition.onend = () => {
+    setIsListening(false);
+  };
+
+  recognition.onresult = (event) => {
+    let transcript = "";
+
+    for (
+      let i = event.resultIndex;
+      i < event.results.length;
+      i++
+    ) {
+      transcript += event.results[i][0].transcript;
+    }
+
+    setInput(transcript);
+  };
+
+  recognition.onerror = () => {
+    setIsListening(false);
+  };
+
+  recognitionRef.current = recognition;
+  }, []);
+
+  const toggleVoiceInput = () => {
+  if (!recognitionRef.current) {
+    alert(
+      "Speech recognition isn't supported in this browser."
+    );
+    return;
+  }
+
+  if (isListening) {
+    recognitionRef.current.stop();
+  } else {
+    recognitionRef.current.start();
+  }
+  };
 
   const copyMessage = async (
     message
@@ -850,34 +916,59 @@ function AIAssistant() {
             className="border-t border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
           >
             <div className="flex items-end gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-2 transition focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 dark:border-slate-700 dark:bg-slate-950 dark:focus-within:ring-indigo-900/40">
-              <textarea
-                ref={inputRef}
-                value={input}
-                onChange={(event) =>
-                  setInput(event.target.value)
-                }
-                onKeyDown={handleKeyDown}
-                rows={1}
-                maxLength={5000}
-                placeholder="Ask anything about your career..."
-                className="max-h-32 min-h-10 flex-1 resize-none bg-transparent px-2 py-2 text-sm text-slate-900 outline-none placeholder:text-slate-400 dark:text-white"
-              />
 
-              <button
+             <textarea
+               ref={inputRef}
+               value={input}
+               onChange={(event) =>
+                setInput(event.target.value)
+               }
+               onKeyDown={handleKeyDown}
+               rows={1}
+               maxLength={5000}
+               placeholder="Ask anything about your career..."
+               className="max-h-32 min-h-10 flex-1 resize-none bg-transparent px-2 py-2 text-sm text-slate-900 outline-none placeholder:text-slate-400 dark:text-white"
+             />
+
+              {/* Voice Button */}
+             <button
+               type="button"
+                onClick={toggleVoiceInput}
+                className={`flex h-11 w-11 items-center justify-center rounded-xl transition ${
+                 isListening
+                 ? "bg-red-500 text-white animate-pulse"
+                 : "bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600"
+               }`}
+                title={
+                  isListening
+                  ? "Stop listening"
+                  : "Voice input"
+                }
+              >
+                {isListening ? (
+                 <MicOff className="h-5 w-5" />
+               ) : (
+                 <Mic className="h-5 w-5" />
+               )}
+             </button>
+
+             {/* Send Button */}
+             <button
                 type="submit"
                 disabled={
-                  !input.trim() ||
-                  isSending
+                 !input.trim() ||
+                 isSending
                 }
                 className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg transition-all duration-200 hover:scale-105 hover:from-indigo-700 hover:to-purple-700 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
                 aria-label="Send message"
               >
-                {isSending ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                ) : (
-                  <Send className="h-5 w-5" />
-                )}
-              </button>
+               {isSending ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+               <Send className="h-5 w-5" />
+              )}
+             </button>
+
             </div>
 
             <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
