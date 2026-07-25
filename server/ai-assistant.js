@@ -327,11 +327,28 @@ export default async function aiAssistant(
       success: true,
       reply,
     });
-  } catch (error) {
-    console.error(
-      "AI assistant error:",
-      error
-    );
+  }catch (error) {
+  console.error(error);
+
+  // Handle Gemini quota exceeded
+  if (
+    error.message?.includes("RESOURCE_EXHAUSTED") ||
+    error.message?.includes("429") ||
+    error.message?.includes("quota")
+  ) {
+    return res.status(429).json({
+      success: false,
+      quotaExceeded: true,
+      message:
+        "The AI service has reached today's free usage limit. Please try again later.",
+    });
+  }
+
+  return res.status(500).json({
+    success: false,
+    message: "Something went wrong. Please try again.",
+  });
+  }
 
     const status =
       Number(error?.status) ||
