@@ -611,6 +611,62 @@ function Dashboard() {
   streakXp;
 
   const level = Math.floor(xp / 500) + 1;
+   
+  useEffect(() => {
+  if (!userData) return;
+
+  async function loadInsights() {
+    try {
+      setLoadingInsights(true);
+
+      const insights = await getDashboardInsights({
+        name: user.name,
+        careerGoal: user.careerGoal,
+        experience: user.experience,
+        skills: user.skills,
+        interests: user.interests,
+
+        roadmapProgress: overallRoadmapProgress,
+        completedRoadmapStages,
+        totalRoadmapStages: roadmap.length,
+
+        completedMissions: completedCount,
+        totalMissions: dailyMissions.length,
+
+        currentStreak,
+
+        xp,
+
+        hasResumeAnalysis: Boolean(resumeAnalysis),
+        resumeScore,
+
+        startedProjects,
+        completedProjects,
+      });
+
+      setAiInsights(insights);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingInsights(false);
+    }
+  }
+
+  loadInsights();
+  }, [
+  userData,
+  overallRoadmapProgress,
+  completedRoadmapStages,
+  roadmap.length,
+  completedCount,
+  dailyMissions.length,
+  currentStreak,
+  xp,
+  resumeAnalysis,
+  resumeScore,
+  startedProjects,
+  completedProjects,
+  ]);
 
   const resetJourney = () => {
     const confirmed = window.confirm(
@@ -665,61 +721,7 @@ function Dashboard() {
     );
   }
 
-  useEffect(() => {
-  if (!userData) return;
-
-  async function loadInsights() {
-    try {
-      setLoadingInsights(true);
-
-      const insights = await getDashboardInsights({
-        name: user.name,
-        careerGoal: user.careerGoal,
-        experience: user.experience,
-        skills: user.skills,
-        interests: user.interests,
-
-        roadmapProgress: overallRoadmapProgress,
-        completedRoadmapStages,
-        totalRoadmapStages: roadmap.length,
-
-        completedMissions: completedCount,
-        totalMissions: dailyMissions.length,
-
-        currentStreak,
-
-        xp,
-
-        hasResumeAnalysis: Boolean(resumeAnalysis),
-        resumeScore,
-
-        startedProjects,
-        completedProjects,
-      });
-
-      setAiInsights(insights);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoadingInsights(false);
-    }
-  }
-
-  loadInsights();
-}, [
-  userData,
-  overallRoadmapProgress,
-  completedRoadmapStages,
-  roadmap.length,
-  completedCount,
-  dailyMissions.length,
-  currentStreak,
-  xp,
-  resumeAnalysis,
-  resumeScore,
-  startedProjects,
-  completedProjects,
-]);
+ 
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-white">
@@ -759,6 +761,44 @@ function Dashboard() {
               </div>
             </div>
           </div>
+        </section>
+
+        <section className="mb-8">
+          <div className="mb-5 flex items-center justify-between">
+            <div>
+               <p className="text-xs font-bold uppercase tracking-wider text-indigo-600">
+                 AI Assistant
+                </p>
+
+               <h2 className="mt-1 text-2xl font-bold">
+                  AI Insights
+                </h2>
+
+               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                 Personalized recommendations based on your progress.
+               </p>
+              </div>
+            </div>
+
+            {loadingInsights ? (
+              <div className="grid gap-4 md:grid-cols-2">
+                {[1, 2, 3, 4].map((item) => (
+              <div
+               key={item}
+               className="h-40 animate-pulse rounded-2xl bg-slate-200 dark:bg-slate-800"
+              />
+            ))}
+           </div>
+           ) : (
+           <div className="grid gap-4 md:grid-cols-2">
+           {aiInsights.map((insight) => (
+           <AIInsightsCard
+             key={insight.id}
+             insight={insight}
+            />
+           ))}
+         </div>
+          )}
         </section>
 
         {/* Stats */}
