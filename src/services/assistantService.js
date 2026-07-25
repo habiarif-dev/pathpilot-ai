@@ -1,5 +1,5 @@
 export async function sendAssistantMessage(payload) {
-  const response = await fetch("/api/ai-assistant", {
+  const response = await fetch("https://pathpilot-ai-backend-x4w8.onrender.com/api/ai-assistant", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

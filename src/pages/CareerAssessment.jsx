@@ -177,7 +177,7 @@ function CareerAssessment() {
     setError("");
 
     try {
-      const response = await fetch("/api/career-assessment", {
+      const response = await fetch("https://pathpilot-ai-backend-x4w8.onrender.com/api/career-assessment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

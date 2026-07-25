@@ -408,7 +408,7 @@ function ResumeAnalyzer() {
       );
 
       const response = await fetch(
-        "/api/resume-analyzer",
+        "https://pathpilot-ai-backend-x4w8.onrender.com/api/resume-analyzer",
         {
           method: "POST",
           headers: {
