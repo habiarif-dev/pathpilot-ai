@@ -219,19 +219,28 @@ Return ONLY valid JSON using this exact structure:
       success: true,
       interview,
     });
-  } catch (error) {
-    console.error(
-      "GENERATE INTERVIEW ERROR:"
-    );
-    console.error(error);
+  }catch (error) {
+  console.error(error);
 
-    return res.status(500).json({
+  // Handle Gemini quota exceeded
+  if (
+    error.message?.includes("RESOURCE_EXHAUSTED") ||
+    error.message?.includes("429") ||
+    error.message?.includes("quota")
+  ) {
+    return res.status(429).json({
       success: false,
-      error:
-        error?.message ||
-        "Unable to generate the interview.",
+      quotaExceeded: true,
+      message:
+        "The AI service has reached today's free usage limit. Please try again later.",
     });
   }
+
+  return res.status(500).json({
+    success: false,
+    message: "Something went wrong. Please try again.",
+  });
+ }
 }
 
 /*
@@ -387,18 +396,27 @@ Return ONLY valid JSON:
       evaluation,
     });
   } catch (error) {
-    console.error(
-      "ANSWER EVALUATION ERROR:"
-    );
-    console.error(error);
+  console.error(error);
 
-    return res.status(500).json({
+  // Handle Gemini quota exceeded
+  if (
+    error.message?.includes("RESOURCE_EXHAUSTED") ||
+    error.message?.includes("429") ||
+    error.message?.includes("quota")
+  ) {
+    return res.status(429).json({
       success: false,
-      error:
-        error?.message ||
-        "Unable to evaluate the answer.",
+      quotaExceeded: true,
+      message:
+        "The AI service has reached today's free usage limit. Please try again later.",
     });
   }
+
+  return res.status(500).json({
+    success: false,
+    message: "Something went wrong. Please try again.",
+  });
+ }
 }
 
 /*
@@ -621,18 +639,27 @@ Return ONLY valid JSON:
       report,
     });
   } catch (error) {
-    console.error(
-      "FINAL REPORT ERROR:"
-    );
-    console.error(error);
+  console.error(error);
 
-    return res.status(500).json({
+  // Handle Gemini quota exceeded
+  if (
+    error.message?.includes("RESOURCE_EXHAUSTED") ||
+    error.message?.includes("429") ||
+    error.message?.includes("quota")
+  ) {
+    return res.status(429).json({
       success: false,
-      error:
-        error?.message ||
-        "Unable to generate the final report.",
+      quotaExceeded: true,
+      message:
+        "The AI service has reached today's free usage limit. Please try again later.",
     });
   }
+
+  return res.status(500).json({
+    success: false,
+    message: "Something went wrong. Please try again.",
+  });
+ }
 }
 
 function getRatingFromScore(score) {

@@ -380,9 +380,4 @@ export default async function aiAssistant(
           ? status
           : 500
       )
-      .json({
-        success: false,
-        error: errorMessage,
-      });
   }
-}

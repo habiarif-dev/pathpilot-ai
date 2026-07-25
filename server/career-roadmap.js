@@ -825,15 +825,26 @@ export async function generateCareerRoadmap(req, res) {
       roadmap,
     });
   } catch (error) {
-    console.error("CAREER ROADMAP GENERATION ERROR:");
-    console.error(error);
+  console.error(error);
 
-    return res.status(500).json({
+  // Handle Gemini quota exceeded
+  if (
+    error.message?.includes("RESOURCE_EXHAUSTED") ||
+    error.message?.includes("429") ||
+    error.message?.includes("quota")
+  ) {
+    return res.status(429).json({
       success: false,
-      error:
-        error?.message ||
-        "Unable to generate the career roadmap.",
+      quotaExceeded: true,
+      message:
+        "The AI service has reached today's free usage limit. Please try again later.",
     });
+  }
+
+  return res.status(500).json({
+    success: false,
+    message: "Something went wrong. Please try again.",
+  });
   }
 }
 
@@ -997,16 +1008,27 @@ Use this exact structure:
       milestone,
     });
   } catch (error) {
-    console.error("ROADMAP MILESTONE REGENERATION ERROR:");
-    console.error(error);
+  console.error(error);
 
-    return res.status(500).json({
+  // Handle Gemini quota exceeded
+  if (
+    error.message?.includes("RESOURCE_EXHAUSTED") ||
+    error.message?.includes("429") ||
+    error.message?.includes("quota")
+  ) {
+    return res.status(429).json({
       success: false,
-      error:
-        error?.message ||
-        "Unable to regenerate this roadmap milestone.",
+      quotaExceeded: true,
+      message:
+        "The AI service has reached today's free usage limit. Please try again later.",
     });
   }
+
+  return res.status(500).json({
+    success: false,
+    message: "Something went wrong. Please try again.",
+  });
+ }
 }
 
 /* =========================================================
@@ -1252,16 +1274,27 @@ Use this exact structure:
       mission,
     });
   } catch (error) {
-    console.error("DAILY MISSION GENERATION ERROR:");
-    console.error(error);
+  console.error(error);
 
-    return res.status(500).json({
+  // Handle Gemini quota exceeded
+  if (
+    error.message?.includes("RESOURCE_EXHAUSTED") ||
+    error.message?.includes("429") ||
+    error.message?.includes("quota")
+  ) {
+    return res.status(429).json({
       success: false,
-      error:
-        error?.message ||
-        "Unable to generate today's mission.",
+      quotaExceeded: true,
+      message:
+        "The AI service has reached today's free usage limit. Please try again later.",
     });
   }
+
+  return res.status(500).json({
+    success: false,
+    message: "Something went wrong. Please try again.",
+  });
+ }
 }
 
 export default generateCareerRoadmap;

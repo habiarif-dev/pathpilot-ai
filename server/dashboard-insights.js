@@ -274,12 +274,25 @@ Rules:
       generatedByAI: true,
     });
   } catch (error) {
-    console.error("Dashboard insights error:", error);
+  console.error(error);
 
-    return res.status(200).json({
-      success: true,
-      insights: buildFallbackInsights(req.body || {}),
-      generatedByAI: false,
+  // Handle Gemini quota exceeded
+  if (
+    error.message?.includes("RESOURCE_EXHAUSTED") ||
+    error.message?.includes("429") ||
+    error.message?.includes("quota")
+  ) {
+    return res.status(429).json({
+      success: false,
+      quotaExceeded: true,
+      message:
+        "The AI service has reached today's free usage limit. Please try again later.",
     });
   }
+
+  return res.status(500).json({
+    success: false,
+    message: "Something went wrong. Please try again.",
+  });
+ }
 }

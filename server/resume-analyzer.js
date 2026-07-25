@@ -487,7 +487,7 @@ export default async function handler(req, res) {
       success: false,
       fallback: true,
       message:
-        "AI analysis could not be completed. The basic analyzer should be used instead.",
+        "AI analysis could not be completed due to 'Gemini free tier limit exceeded for this day'. The basic analyzer should be used instead.",
     });
   }
 }

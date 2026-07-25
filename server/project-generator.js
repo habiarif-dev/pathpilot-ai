@@ -124,11 +124,28 @@ Return ONLY valid JSON.
         .trim();
 
        project = JSON.parse(cleanedText);
-    } catch (err) {
-      return res.status(500).json({
-        error: "Failed to parse AI response.",
-      });
-    }
+    } catch (error) {
+  console.error(error);
+
+  // Handle Gemini quota exceeded
+  if (
+    error.message?.includes("RESOURCE_EXHAUSTED") ||
+    error.message?.includes("429") ||
+    error.message?.includes("quota")
+  ) {
+    return res.status(429).json({
+      success: false,
+      quotaExceeded: true,
+      message:
+        "The AI service has reached today's free usage limit. Please try again later.",
+    });
+  }
+
+  return res.status(500).json({
+    success: false,
+    message: "Something went wrong. Please try again.",
+  });
+}
 
     project.id = `ai-${Date.now()}`;
 
@@ -165,14 +182,25 @@ Return ONLY valid JSON.
     });
 
   } catch (error) {
-  console.error("PROJECT GENERATOR ERROR:");
   console.error(error);
+
+  // Handle Gemini quota exceeded
+  if (
+    error.message?.includes("RESOURCE_EXHAUSTED") ||
+    error.message?.includes("429") ||
+    error.message?.includes("quota")
+  ) {
+    return res.status(429).json({
+      success: false,
+      quotaExceeded: true,
+      message:
+        "The AI service has reached today's free usage limit. Please try again later.",
+    });
+  }
 
   return res.status(500).json({
     success: false,
-    error:
-      error?.message ||
-      "Unable to generate project at the moment.",
+    message: "Something went wrong. Please try again.",
   });
-  }
+ }
 }
