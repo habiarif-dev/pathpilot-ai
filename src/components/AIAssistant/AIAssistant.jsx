@@ -1,3 +1,6 @@
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+
 import {
   Bot,
   Briefcase,
@@ -90,6 +93,67 @@ function getStoredMessages() {
   return storedMessages.length > 0
     ? storedMessages
     : [WELCOME_MESSAGE];
+}
+
+function CodeBlock({ language, code }) {
+  const [copied, setCopied] = useState(false);
+
+  const copyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+
+      setCopied(true);
+
+      window.setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <div className="my-3 overflow-hidden rounded-xl border border-slate-700 bg-slate-950">
+      <div className="flex items-center justify-between border-b border-slate-700 bg-slate-900 px-3 py-2">
+        <span className="text-xs font-medium text-slate-400">
+          {language || "code"}
+        </span>
+
+        <button
+          type="button"
+          onClick={copyCode}
+          className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-slate-400 transition hover:bg-slate-800 hover:text-white"
+        >
+          {copied ? (
+            <>
+              <Check className="h-3.5 w-3.5 text-emerald-400" />
+              Copied
+            </>
+          ) : (
+            <>
+              <Clipboard className="h-3.5 w-3.5" />
+              Copy
+            </>
+          )}
+        </button>
+      </div>
+
+      <SyntaxHighlighter
+        language={language || "text"}
+        style={oneDark}
+        customStyle={{
+          margin: 0,
+          padding: "1rem",
+          background: "transparent",
+          fontSize: "0.75rem",
+          lineHeight: "1.5",
+        }}
+        wrapLongLines
+      >
+        {code}
+      </SyntaxHighlighter>
+    </div>
+  );
 }
 
 function AIAssistant() {
