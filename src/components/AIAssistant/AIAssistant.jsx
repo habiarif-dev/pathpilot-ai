@@ -571,6 +571,21 @@ function AIAssistant() {
       );
     };
 
+  const quickAction = async (
+  action,
+  assistantMessage
+  ) => {
+  const prompts = {
+    summarize: `Summarize your previous answer in 5 concise bullet points:\n\n${assistantMessage.content}`,
+
+    explain: `Explain your previous answer in very simple language for a beginner:\n\n${assistantMessage.content}`,
+
+    rewrite: `Rewrite your previous answer to be more professional and better formatted:\n\n${assistantMessage.content}`,
+  };
+
+  await submitMessage(prompts[action]);
+  };
+
   const handleSubmit = (
     event
   ) => {
@@ -729,7 +744,7 @@ function AIAssistant() {
           <>{children}</>
           ),
 
-    
+          
 
           table: ({
             children,
@@ -921,6 +936,37 @@ function AIAssistant() {
                                 <RefreshCw className="h-3.5 w-3.5" />
                                 Regenerate
                               </button>
+
+                              <button
+                                type="button"
+                                 onClick={() =>
+                                   quickAction("summarize", message)
+                                 }
+                               className="flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-slate-500 transition hover:bg-slate-100 hover:text-indigo-600 dark:hover:bg-slate-800 dark:hover:text-indigo-400"
+                              >
+                               📄 Summary
+                             </button>
+
+                             <button
+                               type="button"
+                               onClick={() =>
+                                 quickAction("explain", message)
+                                }
+                               className="flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-slate-500 transition hover:bg-slate-100 hover:text-indigo-600 dark:hover:bg-slate-800 dark:hover:text-indigo-400"
+                              >
+                               💡 Explain
+                             </button>
+
+                             <button
+                               type="button"
+                               onClick={() =>
+                               quickAction("rewrite", message)
+                               }
+                               className="flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-slate-500 transition hover:bg-slate-100 hover:text-indigo-600 dark:hover:bg-slate-800 dark:hover:text-indigo-400"
+                              >
+                                ✍️ Rewrite
+                              </button>
+
                             </div>
                           )}
                       </div>
@@ -970,9 +1016,18 @@ function AIAssistant() {
                     <Bot className="h-4 w-4" />
                   </div>
 
-                  <div className="flex items-center gap-2 rounded-2xl rounded-bl-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    PathPilot is thinking...
+                  <div className="flex items-center gap-2 rounded-2xl rounded-bl-md border border-slate-200 bg-white px-4 py-3 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+
+                    <div className="flex gap-1">
+                      <span className="h-2 w-2 animate-bounce rounded-full bg-indigo-500 [animation-delay:0ms]" />
+                      <span className="h-2 w-2 animate-bounce rounded-full bg-indigo-500 [animation-delay:150ms]" />
+                      <span className="h-2 w-2 animate-bounce rounded-full bg-indigo-500 [animation-delay:300ms]" />
+                   </div>
+
+                   <span className="text-sm text-slate-500 dark:text-slate-400">
+                      PathPilot is thinking...
+                   </span>
+
                   </div>
                 </div>
               )}
