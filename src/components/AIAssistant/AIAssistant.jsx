@@ -849,7 +849,7 @@ function AIAssistant() {
                   return (
                     <div
                       key={message.id}
-                      className={`group flex items-start gap-2 ${
+                      className={`group flex animate-[fadeIn_.25s_ease] items-start gap-2 ${
                         isUser
                           ? "justify-end"
                           : "justify-start"
