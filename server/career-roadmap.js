@@ -19,7 +19,10 @@ function createAIClient() {
 }
 
 function getGeminiModel() {
-  return process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  return (
+    process.env.GEMINI_MODEL?.trim() ||
+    "gemini-3.6-flash"
+  );
 }
 
 function cleanJSONResponse(responseText) {
@@ -800,7 +803,7 @@ export async function generateCareerRoadmap(req, res) {
 
       config: {
         responseMimeType: "application/json",
-        temperature: 0.65,
+      
       },
     });
 
@@ -978,7 +981,7 @@ Use this exact structure:
 
       config: {
         responseMimeType: "application/json",
-        temperature: 0.7,
+        
       },
     });
 
@@ -1116,7 +1119,7 @@ Use this exact structure:
 
       config: {
         responseMimeType: "application/json",
-        temperature: 0.65,
+        
       },
     });
 
